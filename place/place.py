@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """ Place class"""
 from .base_model import BaseModel
+
+
 class Place(BaseModel):
     """ Blueprint for place object"""
     city_id = ""
