@@ -2,6 +2,7 @@
 """ Amenity class"""
 from .base_model import BaseModel
 
+
 class Amenity(BaseModel):
-"""Blueprint for the Amenity model"""
+    """Blueprint for the Amenity model"""
     name = ""
