@@ -1,14 +1,14 @@
 #!/usr/bin/python3
-""" Place class"""
+"""Class PLACE"""
+
 from .base_model import BaseModel
 
-
 class Place(BaseModel):
-    """ Blueprint for place object"""
+    """ Bluerint of place class"""
     city_id = ""
     user_id = ""
     name = ""
-    description ""
+    description = ""
     number_rooms = 0
     number_bathrooms = 0
     max_guest = 0
