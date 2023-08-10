@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """BaseModel class which all will inhirt from it"""
-
 import uuid
 from datetime import datetime
 
