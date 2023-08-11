@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Airbnb Clone """
 from models.base_model import BaseModel
-from models import storage
+from models.__init__ import storage
 from models.amenity import Amenity
 from models.review import Review
 from models.place import Place
@@ -10,13 +10,13 @@ from models.user import User
 from models.city import City
 import cmd
 
-prompt = '(hbnb)'
-classes = ['City', 'Place', 'State', 'User', 'Amenity', 'User', 'BaseModel', 'Review']
-dotcmd  = ['.all()']
 
 class HBNBCommand(cmd.Cmd):
     """Creates a new instance of a given class, saves it \
 (to the JSON file) and prints the id."""
+    prompt = '(hbnb) '
+    classes = ['City', 'Place', 'State', 'User', 'Amenity', 'User', 'BaseModel', 'Review']
+    dotcmd  = ['.all()']
     def do_create(self, line):
         if line == "":
             print("** class name missing **")
@@ -44,7 +44,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")   
         if arg[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
-        if arg < 2:
+        if len(arg) < 2:
             print("** instance id missing **")
         else:
             className = arg[0]
@@ -54,11 +54,12 @@ class HBNBCommand(cmd.Cmd):
             print(storage.all()[key])
         except KeyError:
             print("** no instance found **")
+
     def do_destroy(self, line):
         arg = line.split()
         if line == "":
             print('** class name missing **')
-        if arg[0] not in HBNBCommand.classes:
+        elif arg[0] not in HBNBCommand.classes:
             print("** class doesn't exist ** ")
         else:
             className = arg[0]
@@ -68,7 +69,7 @@ class HBNBCommand(cmd.Cmd):
             del storage.all()[key]
         except KeyError:
             print("** no instance found **")
-
+            
     def do_all(self, line):
         """
         Prints all string representation of all instances
@@ -87,7 +88,8 @@ class HBNBCommand(cmd.Cmd):
         else:
             for key, value in storage.all().items():
                 result.append(value.__str__())
-        print(result)  
+        print(result)
+                   
             
     def do_update(self, line):
         arg = line.split()
@@ -95,11 +97,11 @@ class HBNBCommand(cmd.Cmd):
             print('** class name missing **')
         if arg[0] not in HBNBCommand.classes:
             print("** class doesn't exist ** ")
-        if arg < 2:
+        if len(arg) < 2:
             print('** instance id missing **')
-        if arg < 3:
+        if len(arg) < 3:
             print("** attribute name missing **")
-        if arg < 4:
+        if len(arg) < 4:
             print("** value missing **")
         className = arg[0]
         objId = arg[1]
