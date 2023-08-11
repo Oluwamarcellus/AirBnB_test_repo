@@ -48,7 +48,7 @@ class HBNBCommand(cmd.Cmd):
             print(obj.id)
 
     def do_show(self, line):
-        """Prints the string representation of an instance based \
+        """A string representation of an instance depending \
 on the class name and id."""
         args = line.split()
         if line == '':
@@ -69,8 +69,8 @@ on the class name and id."""
 
     def do_destroy(self, line):
         """
-        Deletes an instance based on the class name
-        and id (save the change into the JSON file)
+        Remove an instance depending on class Name
+        and id (changed saved at the JSON file)
         """
         args = line.split()
         if line == '':
@@ -92,7 +92,7 @@ on the class name and id."""
 
     def do_all(self, line):
         """
-        Prints all string representation of all instances
+        String representation of instance printing
         based or not on the class name. Ex: $ all BaseModel or $ all
         """
         args = line.split()
@@ -112,11 +112,8 @@ on the class name and id."""
 
     def do_update(self, line):
         """
-        Updates an instance based on the class name and
-        id by adding or updating attribute
-        (save the change into the JSON file). Ex: $ update
-        BaseModel 1234-1234-1234 email "aibnb@mail.com".
-        update <class name> <id> <attribute name> "<attribute value>"
+        Instance Updating based on class name and
+        ID throught adding or updating attr
         """
         args = line.split()
         if line == '':
