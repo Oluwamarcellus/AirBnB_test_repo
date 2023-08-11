@@ -11,7 +11,7 @@ class TestBaseModel(unittest.TestCase):
     def test_str(self):
         amenity = Amenity()
         self.assertEqual(amenity.name, "")
-        
+
     def test_p(self):
         amenity = Amenity()
         self.assertTrue(isinstance(amenity, Amenity))
