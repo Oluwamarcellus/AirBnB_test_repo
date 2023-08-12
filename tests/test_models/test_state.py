@@ -10,7 +10,7 @@ from models.base_model import BaseModel
 import datetime
 
 
-class StateTest(unittest.TestCase):
+class TestState(unittest.TestCase):
     """
     Test cases for State module
     """

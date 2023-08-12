@@ -9,7 +9,7 @@ from models.city import City
 from models.base_model import BaseModel
 
 
-class CityTest(unittest.TestCase):
+class TestCity(unittest.TestCase):
     """
     Test cases for City module
     """

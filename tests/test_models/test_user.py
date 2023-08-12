@@ -9,7 +9,7 @@ from models.user import User
 from models.base_model import BaseModel
 import datetime
 
-class UserTest(unittest.TestCase):
+class TestUser(unittest.TestCase):
     """
     Test cases for user module
     """
