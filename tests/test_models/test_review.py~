@@ -16,6 +16,6 @@ class TestBaseModel(unittest.TestCase):
 
     def test_p(self):
         review = Review()
-        self.assertTrue(isinstance(review, BaseModel))
+        self.assertTrue(isinstance(review, Review))
 if __name__ == '__main__':
     unittest.main()
