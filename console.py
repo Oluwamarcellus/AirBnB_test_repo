@@ -11,6 +11,7 @@ from models.amenity import Amenity
 from models.review import Review
 from models.city import City
 from models.state import State
+import re
 
 
 class HBNBCommand(cmd.Cmd):
@@ -102,76 +103,111 @@ on the class name and id."""
                 print('** class doesn\'t exist **')
                 return
             else:
-                for key, value in storage.all().items():
+                for _, value in storage.all().items():
                     if type(value).__name__ == args[0]:
                         result.append(value.__str__())
         else:
-            for key, value in storage.all().items():
+            for _, value in storage.all().items():
                 result.append(value.__str__())
         print(result)
 
-    def do_update(self, line):
+    def do_update(self, arg):
         """
-        Instance Updating based on class name and
-        ID throught adding or updating attr
+        Handles update command
         """
-        args = line.split()
-        if line == '':
-            print('** class name missing **')
-        elif args[0] not in HBNBCommand.classes:
-            print('** class doesn\'t exist **')
-        elif len(args) < 2:
-            print('** instance id missing **')
-
-        elif len(args) < 3:
-            print('** attribute name missing **')
-        elif len(args) < 4:
-            print('** value missing **')
-        else:
-            classname = args[0]
-            objid = args[1]
-            attr = args[2]
-            value = args[3]
-            oob = ['id', 'created_at', 'updated_at']
-            if attr in oob:
-                print('** attribute can\'t be updated **')
+        arg = arg.split()
+        objects = storage.all()
+        if len(arg) == 0:
+            print("** class name missing **")
+        elif arg[0] not in self.classes:
+            print("** class doesn't exist **")
+        elif len(arg) == 1:
+            print("** instance id missing **")
+        elif len(arg) > 1:
+            try:
+                instance = objects["{}.{}".format(arg[0], arg[1])]
+            except Exception:
+                print("** no instance found **")
                 return
-            """
-            string validity test begins (incomplete)
-            """
-            if value[0] == '"' and value[-1] == '"' or value[0] == "'":
-                if value[0] != '"':
-                    print("** A string argument must be between \
-double quotes **")
-                    return
-                value = value[1:-1]
+            if len(arg) == 2:
+                print("** attribute name missing **")
+            elif len(arg) == 3:
+                print("** value missing **")
             else:
-                try:
+                attr = arg[2]
+                value = str(arg[3])
+                strings = ["\"", "\'"]
+                if value[0] in strings or value[-1] in strings:
+                    value = value.strip("'\"")
+                else:
+                    dot = False
+                    letter = False
                     for c in value:
-                        if c == '.':
-                            value = float(value)
-                            break
+                        if c.isalpha():
+                            letter = True
+                        if c == ".":
+                            dot = True
+                    if letter is True:
+                        value = str(value)
+                    elif dot is True:
+                        value = float(value)
                     else:
                         value = int(value)
-                except ValueError:
-                    print("** A string argument must \
-be between double quote **")
-            if (attr[0] == '"' and attr[-1] == '"')\
-               or attr[0] == "'" or attr[-1] == "'":
-                if attr[0] != '"' or attr[-1] == "'":
-                    print("** A string argument must be between \
-double quotes **")
-                    return
-                attr = attr[1:-1]
-            """ string validity test ends """
-            key = classname + '.' + objid
-            try:
-                instance = storage.all()[key]
-                instance.__dict__[attr] = value
-                instance.save()
-            except KeyError:
-                print('** no instance found **')
-                
+                setattr(instance, attr, value)
+                storage.save()
+
+    def do_count(self, arg):
+        """
+        Counts the ocurence of a class Instance in storage
+        """
+        inst = storage.all()
+        arg = arg.split()
+        count = 0
+        for instance in inst.values():
+            if instance.__class__.__name__ == arg[0]:
+                count += 1
+        print(count)
+
+    def default(self, line):
+        """
+        Handling the default behaviour when command that doesn't match
+        defined methods is passed
+        E.G => User.all()
+        """
+        full_match = re.search(r'[A-Z][a-z]+\.\w+\((.*?)\)', line)
+        met_match = re.search(r'(?<=\.)\w+\((.*?)\)', line)
+        met_dict = {
+                "all": self.do_all,
+                "show": self.do_show,
+                "count": self.do_count,
+                "update": self.do_update,
+                "destroy": self.do_destroy,
+                "create": self.do_create
+                }
+        if full_match and met_match:
+            cls = re.search(r'^[A-Z][a-z]+', full_match.group(0))
+            met = re.search(r'^\w+(?=\()', met_match.group(0))
+            if not met or not cls:
+                print("** Unknown syntax:", line)
+            else:
+                cls = cls.group(0)
+                met = met.group(0)
+                if cls in self.classes and met in met_dict.keys():
+                    pattern = r'(?<=\()(.+?)(?=\))'
+                    arg_search = re.search(pattern, met_match.group(0))
+                    if arg_search:
+                        args = arg_search.group(0).split(",")
+                        args = " ".join([arg.strip("()\"' ") for arg in args])
+                        met_dict[met](cls + " " + args)
+                    else:
+                        met_dict[met](cls)
+                elif cls not in self.classes:
+                    print("** class doesn't exist **")
+                else:
+                    print("** Unknown syntax:", line)
+        else:
+            print(" *** Unknown syntax:", line)
+
     def do_quit(self, line):
         """Quit command to exit from cmd"""
         return True
@@ -184,6 +220,7 @@ double quotes **")
     def emptyline(self):
         """Empty line + Enter shouldn't execute anything"""
         pass
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
