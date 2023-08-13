@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-User Class module 
+User Class module
 """
 
 
